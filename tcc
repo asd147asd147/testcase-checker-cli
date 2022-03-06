@@ -16,7 +16,7 @@ fi
 
 sourceName=$(basename -s '.cpp' $sourceFile)
 executeFile=$sourceDir$sourceName
-g++ -std=c++17 -o $executeFile $sourceFile
+g++ -std=c++17 -o "$executeFile" "$sourceFile"
 
 inpList=$(find $sourceDir -name '*.inp')
 tcNum=0
@@ -30,15 +30,18 @@ do
         echo "tcc: FileError: No exist $tcName.out"
         continue
     fi
-    $executeFile < $sourceDir$tcName.inp > $sourceDir$tcName.ans.out
+    elapsedTime=$((time "$executeFile" < $sourceDir$tcName.inp > $sourceDir$tcName.ans.out) 2>&1 | head -2)
+    elapsedTime=`echo $elapsedTime | cut -d 'm' -f2`
+    
     lastLine=$(tail $sourceDir$tcName.ans.out)
     sed '$d' $sourceDir$tcName.ans.out > $sourceDir$tcName.ans.out
     echo $lastLine >> $sourceDir$tcName.ans.out
     result=$(diff --brief $sourceDir$tcName.ans.out $sourceDir$tcName.out)
 
     if [[ -z $result ]]; then
-        echo "PASS"
+        printf "PASS "
     else
-        echo "FAIL"
+        printf "FAIL "
     fi
+    echo $elapsedTime
 done
