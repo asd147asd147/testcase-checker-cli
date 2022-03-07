@@ -24,8 +24,8 @@ executeFile=$sourceDir$sourceName
 g++ -std=c++17 -o "$executeFile" "$sourceFile"
 
 parallelJudge() {
-    local elapsedTime=$((time "$executeFile" < $sourceDir$1.inp > $sourceDir$1.ans.out) 2>&1 | head -2)
-    local elapsedTime=`echo $elapsedTime | cut -d 'm' -f2`
+    local elapsedTime=$((time "$executeFile" < $sourceDir$1.inp > $sourceDir$1.ans.out) 2>&1 | head -3)
+    local elapsedTime=`echo $elapsedTime | cut -d 'm' -f3`
     local lastLine=$(tail $sourceDir$tcName.ans.out)
     sed '$d' $sourceDir$tcName.ans.out > $sourceDir$tcName.ans.out
     echo $lastLine >> $sourceDir$tcName.ans.out
